@@ -46,7 +46,7 @@ onUnmounted(() => {
             </li>
         </ul>
         <video v-if="article.article_videos.length !== 0 && article.article_images.length === 0"
-            :src="article.article_videos[0]?.video_url" ref="videoRef" muted playsinline controls />
+            :src="article.article_videos[0]?.video_url" ref="videoRef" :poster="article.article_videos[0].thumbnail_url" muted playsinline controls />
         <div v-if="enlargedImage" class="overlay" @click="closeImage">
             <img :src="enlargedImage" class="enlarged" alt="放大图片">
         </div>

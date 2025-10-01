@@ -19,7 +19,8 @@ const articleData = reactive<createArticleData>({
   isTop: false,
   isAd: false,
   imageUrls: [],
-  videoUrls: []
+  videoUrls: [],
+  thumbnail_url: ''
 })
 const imageData = ref('')
 const videoData = ref('')
@@ -87,7 +88,7 @@ async function fetchLocation() {
   try {
     states.location = true
     const res = await getLocation()
-    articleData.location = res?.result.subdivisions + '省 · ' + res?.result.city
+    articleData.location = res?.result.subdivisions + ' ' + (res?.result.city ? res?.result.city : '')
     messageStore.update(id, { type: 'success', text: '获取位置信息成功', duration: 2000 })
   } catch (error) {
     console.log(error);
@@ -119,6 +120,7 @@ async function addArticle() {
     articleData.location = ''
     articleData.imageUrls = []
     articleData.videoUrls = []
+    articleData.thumbnail_url = ''
     imageData.value = '' // 清空图片输入框
     videoData.value = '' // 清空视频输入框
     states.add = false
@@ -209,6 +211,8 @@ const adjustHeight = (event: Event) => {
         <textarea v-model="imageData" placeholder=" 输入图片链接(使用“,”、空格、换行 区分图片)" @input="adjustHeight" class="mediaArea"
           v-if="articleData.type === 1"></textarea>
         <textarea v-model="videoData" placeholder=" 输入视频链接" @input="adjustHeight" class="mediaArea"
+          v-if="articleData.type === 2"></textarea>
+          <textarea v-model="articleData.thumbnail_url" placeholder=" 输入视频封面链接" @input="adjustHeight" class="mediaArea"
           v-if="articleData.type === 2"></textarea>
       </div>
     </div>

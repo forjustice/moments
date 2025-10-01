@@ -35,7 +35,8 @@ export interface createArticleData {
     isAd?: boolean,
     type?: number,
     imageUrls?: string[],
-    videoUrls?: string[]
+    videoUrls?: string[],
+    thumbnail_url?: string
 }
 
 export interface updateArticleData {

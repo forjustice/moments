@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 router.post('/', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.user?.userId;
-        const { content, status, location, type, isTop, isAd, imageUrls, videoUrls } = req.body;
+        const { content, status, location, type, isTop, isAd, imageUrls, videoUrls, thumbnail_url } = req.body;
         if (!content && !imageUrls && !videoUrls) {
             return res.status(400).json({ error: '文章内容不能为空' });
         }
@@ -46,6 +46,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
                 const videoData = videoUrls.map((url: string, index: number) => ({
                     article_id: createdArticle.id,
                     video_url: url,
+                    thumbnail_url,
                     sort_order: index
                 }))
                 await tx.article_videos.createMany({ data: videoData })
