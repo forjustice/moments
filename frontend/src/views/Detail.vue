@@ -51,6 +51,7 @@ onMounted(async() => {
         <div class="body">
             <span v-if="!article">正在加载中...</span>
             <ArticleItem 
+            @click="console.log(article)"
                 v-if="article"
                 :article="article"
                 :likers="articleStore.likers || []"
@@ -72,6 +73,7 @@ onMounted(async() => {
     display: flex;
     flex-direction: column;
     width: 100%;
+    background-color: var(--color-bg-app);
 }
 
 /* 头部栏 */
@@ -81,8 +83,7 @@ onMounted(async() => {
     align-items: center;
     justify-content: space-between;
     height: 6vh;
-    color: #00000098;
-    background: #f3f3f3e8;
+    background-color: var(--color-post-bar);
     padding: 0px 5px 0px 10px;
 }
 
@@ -111,7 +112,6 @@ onMounted(async() => {
     flex-direction: column;
     /* width: min(100%,520px); */
     width: 100%;
-    background: #ffffff;
     min-height: 100vh;
 }
 .body span {

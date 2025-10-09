@@ -17,7 +17,19 @@
 
 ## 快速部署请查看：[doc/quickDeploy.md](doc/quickDeploy-readme.md)
 
+使用`build.sh`时候注意前端`.env`的接口修改为 `VITE_API_BASE_URL=/api` ，前后端分离则使用 `VITE_API_BASE_URL=http://localhost:9889/api`(记得替换成你真实后端地址)
+
 ## 更新计划：[doc/update.md](doc/update.md)
+
+### 本次更新
+
+* [X]  视频封面（首帧图）
+* [X]  广告类型跳转超链接
+* [X]  友情链接页面
+* [X]  前端通知：数据库表
+* [X]  后台上传文件接口：新增本地上传和S3储存桶（我是使用CF R2进行的测试没问题）
+* [X]  文章标签（TAG）：数据库
+* [X]  全局黑暗模式 + 回到顶部
 
 ## 程序开发
 

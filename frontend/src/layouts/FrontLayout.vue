@@ -2,7 +2,10 @@
 import { RouterView } from 'vue-router';
 import { useDefaultStore } from '@/store/default';
 import { computed, onMounted } from 'vue';
+import Func from '@/components/utils/Func.vue';
+import { useThemeStore } from '@/store/theme';
 
+const themeStore =useThemeStore()
 const defaultStore = useDefaultStore()
 onMounted(() => {
   defaultStore.getPublicConfig()
@@ -24,12 +27,14 @@ const backgroundStyle = computed(() => {
     }
   } else {
     // 默认背景
-    return { backgroundImage: undefined, backgroundColor: '#f0f0f0' };
+    const defaultColor = themeStore.defaultOutsideBgColor;
+    return { backgroundImage: undefined, backgroundColor: defaultColor };
   }
 });
 </script>
 
 <template>
+  <Func />
   <div class="front-container" :style="backgroundStyle">
     <div>
     </div>
@@ -53,6 +58,10 @@ const backgroundStyle = computed(() => {
   /* 不重复 */
   background-attachment: fixed;
   /* 背景固定，内容滚动 */
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-outside);
+  transition: background-color 0.3s ease-in, color 1s ease;
+  box-shadow: var(--color-shadow);
 }
 
 .app-container {
@@ -63,7 +72,7 @@ const backgroundStyle = computed(() => {
   max-width: 520px;
   width: 100%;
   margin: 0 auto;
-  background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-bg-app);
+  transition: background-color 0.5s ease;
 }
 </style>

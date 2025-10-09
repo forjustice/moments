@@ -259,6 +259,7 @@ function handleLogout() {
   display: flex;
   flex-direction: column;
   width: 100%;
+  background-color: var(--color-bg-app);
 }
 
 /* 头部栏 */
@@ -267,8 +268,8 @@ function handleLogout() {
   flex-direction: row;
   align-items: center;
   height: 6vh;
-  color: #00000098;
-  background: #f3f3f3e8;
+  color: var(--color-text-primary);
+  background-color: var(--color-post-bar);
   padding: 0px 5px 0px 10px;
   gap: 10px;
 }
@@ -294,7 +295,6 @@ function handleLogout() {
   flex-direction: column;
   /* width: min(100%,520px); */
   width: 100%;
-  background: #ffffff;
 }
 
 .body-item {
@@ -304,7 +304,7 @@ function handleLogout() {
   justify-content: space-between;
   box-shadow: 0 0.6px 0 0 #cccccc62;
   padding: 10px 0 10px 0;
-  color: #000000cd;
+  /* color: #000000cd; */
   font-size: small;
 }
 
@@ -316,7 +316,7 @@ function handleLogout() {
   margin-right: 10px;
   display: flex;
   align-items: center;
-  color: #0000004f;
+  color: var(--color-profile-item-right);
 }
 
 .body-item-right:hover {
@@ -334,7 +334,6 @@ function handleLogout() {
   justify-content: center;
   padding: 5px;
   font: small;
-  color: #000000bb;
 }
 .body-logout {
   box-shadow: 0 -10px 0 0 #cccccc62;
@@ -361,6 +360,7 @@ input {
   margin-bottom: 5px;
   margin-top: 5px;
   color: #338ae7;
+  background-color: inherit;
   width: 75%;
   border-radius: 3px;
 }

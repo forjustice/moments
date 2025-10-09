@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { authMiddleware } from "../middleware/authMiddleware.js";
@@ -14,10 +5,9 @@ import { logAction, logger } from "../services/log.service.js";
 const router = Router();
 const prisma = new PrismaClient();
 // 创建一条评论 需要登录
-router.post('/', authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+router.post('/', authMiddleware, async (req, res) => {
     try {
-        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+        const userId = req.user?.userId;
         const { articleId, content, parentId } = req.body;
         // 验证输入
         if (!articleId || !content) {
@@ -26,7 +16,7 @@ router.post('/', authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0,
         // 子评论
         if (parentId) {
             // 父评论
-            const parentComment = yield prisma.comments.findUnique({
+            const parentComment = await prisma.comments.findUnique({
                 where: { id: BigInt(parentId) }
             });
             // 检查父评论是否存在
@@ -39,7 +29,7 @@ router.post('/', authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0,
             }
         }
         // 验证文章状态
-        const article = yield prisma.articles.findFirst({
+        const article = await prisma.articles.findFirst({
             where: {
                 id: BigInt(articleId),
                 status: 1,
@@ -51,10 +41,15 @@ router.post('/', authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0,
             return res.status(404).json({ error: '文章不存在或未发布' });
         }
         // 使用 prisma 事务来保证数据一致性（都成功/失败）
-        const [newComment, updateArticle] = yield prisma.$transaction([
+        const [newComment, updateArticle] = await prisma.$transaction([
             // 创建新评论
             prisma.comments.create({
-                data: Object.assign({ content, article: { connect: { id: BigInt(articleId) } }, user: { connect: { id: BigInt(userId) } } }, (parentId && { parent: { connect: { id: BigInt(parentId) } } })),
+                data: {
+                    content,
+                    article: { connect: { id: BigInt(articleId) } },
+                    user: { connect: { id: BigInt(userId) } },
+                    ...(parentId && { parent: { connect: { id: BigInt(parentId) } } })
+                },
                 include: {
                     user: {
                         select: { id: true, username: true, nickname: true, avatar: true }
@@ -79,8 +74,11 @@ router.post('/', authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0,
             updated_at: newComment.updated_at,
             article_id: newComment.article_id.toString(),
             user_id: newComment.user_id.toString(),
-            parent_id: (_c = (_b = newComment.parent_id) === null || _b === void 0 ? void 0 : _b.toString()) !== null && _c !== void 0 ? _c : null,
-            user: Object.assign(Object.assign({}, newComment.user), { id: newComment.user.id.toString() })
+            parent_id: newComment.parent_id?.toString() ?? null,
+            user: {
+                ...newComment.user,
+                id: newComment.user.id.toString()
+            }
         };
         logger.add({
             userId: null,
@@ -97,15 +95,14 @@ router.post('/', authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0,
         console.error('创建评论失败:', error);
         res.status(500).json({ error: '服务器内部错误' });
     }
-}));
+});
 // 删除自己的评论同时删除该评论的所有子评论
-router.delete('/:commentId', authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+router.delete('/:commentId', authMiddleware, async (req, res) => {
     try {
-        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+        const userId = req.user?.userId;
         const { commentId } = req.params;
         // 查找需要删除的评论是否存在
-        const comment = yield prisma.comments.findUnique({
+        const comment = await prisma.comments.findUnique({
             where: { id: BigInt(commentId) }
         });
         // 检验是否存在
@@ -113,7 +110,7 @@ router.delete('/:commentId', authMiddleware, (req, res) => __awaiter(void 0, voi
             return res.status(404).json({ error: '评论不存在或已被删除' });
         }
         // 检验是否是本人
-        if ((comment === null || comment === void 0 ? void 0 : comment.user_id.toString()) !== (userId === null || userId === void 0 ? void 0 : userId.toString())) {
+        if (comment?.user_id.toString() !== userId?.toString()) {
             res.status(403).json({ error: '权限不足，禁止操作' });
         }
         // 查找所有评论id
@@ -124,7 +121,7 @@ router.delete('/:commentId', authMiddleware, (req, res) => __awaiter(void 0, voi
             // 将所有评论id放入list数组中
             list.push(...item);
             // 查找所有的子评论id
-            const replies = yield prisma.comments.findMany({
+            const replies = await prisma.comments.findMany({
                 where: {
                     parent_id: { in: item },
                     deleted_at: null
@@ -137,7 +134,7 @@ router.delete('/:commentId', authMiddleware, (req, res) => __awaiter(void 0, voi
             item = replies.map(i => i.id);
         }
         // 事务处理
-        yield prisma.$transaction([
+        await prisma.$transaction([
             //删除所有评论
             prisma.comments.updateMany({
                 where: { id: { in: list } },
@@ -148,7 +145,7 @@ router.delete('/:commentId', authMiddleware, (req, res) => __awaiter(void 0, voi
             // 更新文章的评论数
             prisma.articles.update({
                 where: {
-                    id: comment === null || comment === void 0 ? void 0 : comment.article_id
+                    id: comment?.article_id
                 },
                 data: {
                     comment_count: {
@@ -172,15 +169,15 @@ router.delete('/:commentId', authMiddleware, (req, res) => __awaiter(void 0, voi
         console.error('删除评论失败:', error);
         res.status(500).json({ error: '服务器内部错误' });
     }
-}));
+});
 // 获取文章评论
-router.get('/:articleId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/:articleId', async (req, res) => {
     try {
         const { articleId } = req.params;
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 5;
         const skip = (page - 1) * pageSize;
-        const allComments = yield prisma.comments.findMany({
+        const allComments = await prisma.comments.findMany({
             where: {
                 article_id: BigInt(articleId),
                 deleted_at: null
@@ -201,13 +198,12 @@ router.get('/:articleId', (req, res) => __awaiter(void 0, void 0, void 0, functi
                 }
             }
         });
-        const totalComments = yield prisma.comments.count({
+        const totalComments = await prisma.comments.count({
             where: { article_id: BigInt(articleId), deleted_at: null }
         });
         // 构建响应数据
         const responseData = allComments.map(comment => {
-            var _a, _b, _c, _d, _e;
-            const parentDisplayName = (_d = (_b = (_a = comment.parent) === null || _a === void 0 ? void 0 : _a.user.nickname) !== null && _b !== void 0 ? _b : (_c = comment.parent) === null || _c === void 0 ? void 0 : _c.user.username) !== null && _d !== void 0 ? _d : null;
+            const parentDisplayName = comment.parent?.user.nickname ?? comment.parent?.user.username ?? null;
             return {
                 id: comment.id.toString(),
                 content: comment.content,
@@ -215,9 +211,12 @@ router.get('/:articleId', (req, res) => __awaiter(void 0, void 0, void 0, functi
                 updated_at: comment.updated_at,
                 article_id: comment.article_id.toString(),
                 user_id: comment.user_id.toString(),
-                parent_id: (_e = comment.parent_id) === null || _e === void 0 ? void 0 : _e.toString(),
+                parent_id: comment.parent_id?.toString(),
                 parent_displayName: parentDisplayName,
-                user: Object.assign(Object.assign({}, comment.user), { id: comment.user.id.toString() })
+                user: {
+                    ...comment.user,
+                    id: comment.user.id.toString()
+                }
             };
         });
         res.status(200).json({
@@ -231,5 +230,5 @@ router.get('/:articleId', (req, res) => __awaiter(void 0, void 0, void 0, functi
         console.error('查询文章评论失败', error);
         res.status(500).json({ error: error });
     }
-}));
+});
 export default router;

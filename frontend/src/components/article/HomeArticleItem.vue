@@ -45,7 +45,7 @@ const time = formatTime(timestamp)
   flex-direction: row;
   padding: 16px;
   box-sizing: border-box;
-  border-bottom: 1px solid #f0f2f5;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .time {

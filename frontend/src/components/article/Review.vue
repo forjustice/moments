@@ -115,8 +115,7 @@ const isDetailPage = computed(() => route.name === 'articleDetail')
       </Icon>
       <span v-for="(liker, index) in likers" :key="index">
         <span  v-if="!isDetailPage">{{ liker.displayName }}</span>
-        <img  v-if="isDetailPage" :src="liker.avatar" alt="" style="width: 25px; height: 25px;" @click="router.push(`/home/${liker.username}`)"/>
-      <span v-if="index < likers.length - 1">，</span>
+        <img  v-if="isDetailPage" :src="liker.avatar" alt="" style="width: 25px; height: 25px; margin-right: 5px; cursor: pointer;" @click="router.push(`/home/${liker.username}`)"/>
       </span>
       <span v-if="likers.length !== 0">...共</span>
       <span v-if="article.like_count !== 0">{{ article.like_count }}人喜欢</span>
@@ -161,14 +160,14 @@ const isDetailPage = computed(() => route.name === 'articleDetail')
   width: 100%;
   margin-top: 5px;
   display: flex;
-  background-color: #f7f7f7;
+  background-color: var(--color-bg-outside);
   flex-direction: column;
 }
 
 .users {
   padding: 5px 5px 5px 10px;
   color: #9ac3ef;
-  border-bottom: 1px solid #dae4f28d;
+  border-bottom: 1px solid var(--color-review-border);
 
 }
 
@@ -181,7 +180,7 @@ const isDetailPage = computed(() => route.name === 'articleDetail')
   flex-direction: column;
   width: 90%;
   margin: 10px auto;
-  background: #fff;
+  background: var(--color-bg-review);
   border-radius: 5px;
   overflow: hidden;
 }
@@ -192,12 +191,13 @@ textarea {
   padding: 10px;
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-primary);
   min-height: 40px;
   height: 50px;
   max-height: 100px;
   overflow: hidden;
   overflow-y: auto;
+  background-color: var(--color-bg-review);
 }
 
 .input:focus-within {
@@ -232,7 +232,6 @@ button:hover {
 }
 
 .load-more {
-color: #25252574;
 margin-left: 10px;
 transition: color 0.3s, font-size 0.3s;
 height: 20px;

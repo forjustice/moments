@@ -5,27 +5,28 @@ import { UserCircleRegular, Hive, Camera } from '@vicons/fa'
 import { Icon } from '@vicons/utils'
 import { useAuthStore } from '@/store/auth'
 import router from '@/router'
+import Link from '@/components/Link.vue';
+import { useDefaultStore } from '@/store/default'
+
 const authStore = useAuthStore()
 const userStore = useUserStore()
-import { useDefaultStore } from '@/store/default'
 const defaultStore = useDefaultStore()
-
+const props = defineProps({
+  headerBackgroundUrl: String
+})
 
 // 默认背景图
 const defaultBackground = '/img/background.mp4'
-
 // 获取背景路径（优先使用用户配置）
 const backgroundPath = computed(() => {
-  return defaultStore.configs.site_header_background || defaultBackground
+  return props.headerBackgroundUrl || defaultStore.configs.site_header_background || defaultBackground
 })
-
 // 判断文件类型
 const isImage = computed(() => {
   const imageExtension = ['jpg', 'png', 'webp', 'svg', 'gif', 'avif', 'jpeg']
   const ext = backgroundPath.value.split('.').pop()?.toLowerCase()
   return ext ? imageExtension.includes(ext) : false
 })
-
 const isVideo = computed(() => {
   const videoExtension = ['mp4', 'webm', 'ogg', 'mov']
   const ext = backgroundPath.value.split('.').pop()?.toLowerCase()
@@ -36,7 +37,13 @@ const isVideo = computed(() => {
 // 模糊
 const isBlurred = ref(false)
 let observer: IntersectionObserver | null = null
-
+type ExposedApi = {
+  toggleShowLink: () => void
+}
+const linkRef = ref<ExposedApi | null>(null)
+const toggleShow = () => {
+  linkRef.value?.toggleShowLink()
+}
 // 挂载时
 onMounted(() => {
   const headerEl = document.querySelector('.header')
@@ -67,7 +74,9 @@ const isLogin = computed(() => !!userStore.token)
 </script>
 
 <template>
+  
   <div class="header">
+    <Link ref="linkRef" />
     <div class="background">
       <!-- 如果设置为图片 -->
       <img v-if="isImage" :src="backgroundPath" alt="顶部图片" />
@@ -82,7 +91,7 @@ const isLogin = computed(() => !!userStore.token)
 
         <div class="top-bar-left">
           <slot name="left" :isBlurred="isBlurred">
-            <Icon :class="['icon', { blurred: isBlurred }]">
+            <Icon :class="['icon', { blurred: isBlurred }]" title="登录/注册">
               <UserCircleRegular @click="authStore.showAuth" v-if="!isLogin" />
             </Icon>
           </slot>
@@ -91,12 +100,12 @@ const isLogin = computed(() => !!userStore.token)
         <div class="top-bar-right">
           <slot name="right" :isBlurred="isBlurred">
             <div class="addArticle" @click="router.push({ name: 'post' })">
-              <Icon :class="['icon', { blurred: isBlurred }]" v-if="isLogin">
+              <Icon :class="['icon', { blurred: isBlurred }]" v-if="isLogin" title="发表文章">
                 <Camera />
               </Icon>
             </div>
-            <div class="link">
-              <Icon :class="['icon', { blurred: isBlurred }]">
+            <div class="link" @click="toggleShow">
+              <Icon :class="['icon', { blurred: isBlurred }]" title="友情链接">
                 <Hive />
               </Icon>
             </div>
@@ -157,27 +166,27 @@ video {
 /* 模糊状态 */
 .top-bar.blurred {
   backdrop-filter: blur(8px);
-  background-color: rgba(234, 233, 233, 0.8);
+  background-color: var(--top-bar);
 }
 
 .icon {
   font-size: 20px;
-  color: rgb(238, 233, 233);
+  color: #EEE9E9;
   margin: 3px;
 }
 
 .icon:hover {
-  color: rgb(200, 194, 194);
+  color: #C8C2C2;
   cursor: pointer;
 }
 
 .icon.blurred {
   font-size: 20px;
-  color: black;
+  color: #898888;
 }
 
 .icon.blurred:hover {
-  color: rgb(81, 78, 78);
+  color: #5f5e5e;
 }
 
 .top-bar-right {

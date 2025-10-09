@@ -78,12 +78,12 @@ const createdAtTimestamp = computed(() => {
     gap: 4px;
     width: 30px;
     height: 20px;
-    background-color: #f0f2f5;
+    background-color: var(--color-ad);
     border-radius: 4px;
     cursor: pointer;
 }
 .dots-button:hover {
-    background-color: #e5e7eb;
+    background-color: var(--color-ad-hover);
 }
 .dots-button p {
     width: 4px;

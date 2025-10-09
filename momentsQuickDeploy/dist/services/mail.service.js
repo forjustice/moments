@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { customAlphabet } from 'nanoid';
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
@@ -96,32 +87,31 @@ export const emailStore = new Map();
 // 解决异步带来的 竞态条件
 const isSending = new Set();
 // 发送验证码的函数
-export function sendVerificationEmail(to) {
-    return __awaiter(this, void 0, void 0, function* () {
-        console.log('@函数开始, emailStore', emailStore);
-        // 判断时候在发送中
-        if (isSending.has(to)) {
-            console.log("已经在发送中，请勿重复操作：", to);
-            return false;
+export async function sendVerificationEmail(to) {
+    console.log('@函数开始, emailStore', emailStore);
+    // 判断时候在发送中
+    if (isSending.has(to)) {
+        console.log("已经在发送中，请勿重复操作：", to);
+        return false;
+    }
+    // 判断是否过期
+    if (emailStore.has(to) && Date.now() < emailStore.get(to).expiresAt) {
+        console.log("发送频繁", to);
+        return false;
+    }
+    // 发送邮件
+    try {
+        isSending.add(to);
+        if (emailStore.has(to)) {
+            console.log("验证码已过期，删除旧码并准备发送新码", to);
         }
-        // 判断是否过期
-        if (emailStore.has(to) && Date.now() < emailStore.get(to).expiresAt) {
-            console.log("发送频繁", to);
-            return false;
-        }
-        // 发送邮件
-        try {
-            isSending.add(to);
-            if (emailStore.has(to)) {
-                console.log("验证码已过期，删除旧码并准备发送新码", to);
-            }
-            const codeObj = generateCode();
-            // 验证码模板
-            const verificationEmail = getEmailTemplate({
-                subject: '您的验证码',
-                title: '验证码',
-                // 将验证码作为主要内容传入，并用 HTML 标签进行样式修饰
-                mainContent: `
+        const codeObj = generateCode();
+        // 验证码模板
+        const verificationEmail = getEmailTemplate({
+            subject: '您的验证码',
+            title: '验证码',
+            // 将验证码作为主要内容传入，并用 HTML 标签进行样式修饰
+            mainContent: `
       您正在进行身份验证，请在 <span style="color:#0077b6;font-weight:bold;">5 分钟</span> 内输入以下验证码完成操作：
       <div style="font-size:32px;letter-spacing:10px;font-weight:bold;color:#00b4d8;margin:20px 0;">
         ${codeObj.code}
@@ -130,34 +120,33 @@ export function sendVerificationEmail(to) {
         如果这不是您的操作，请忽略此邮件。
       </p>
     `,
-            });
-            // 邮件模板
-            const mailOptions = {
-                from: `"验证码服务" <${process.env.EMAIL_USER}>`,
-                to, // 收件人
-                subject: "您的验证码", // 邮件标题
-                text: `您的验证码是 ${codeObj.code}，有效期 5 分钟`, // 纯文本
-                html: verificationEmail // HTML 模板
-            };
-            // 发送邮件
-            const info = yield transporter.sendMail(mailOptions);
-            emailStore.set(to, {
-                code: codeObj.code,
-                createdAt: codeObj.createdAt,
-                expiresAt: codeObj.expiresAt,
-            });
-            console.log("✅ 邮件已发送:", info.messageId);
-            // console.log("✅ 邮件已发送")
-            return true;
-        }
-        catch (error) {
-            console.error("邮件发送失败:", error);
-            return false;
-        }
-        finally {
-            isSending.delete(to);
-        }
-    });
+        });
+        // 邮件模板
+        const mailOptions = {
+            from: `"验证码服务" <${process.env.EMAIL_USER}>`,
+            to, // 收件人
+            subject: "您的验证码", // 邮件标题
+            text: `您的验证码是 ${codeObj.code}，有效期 5 分钟`, // 纯文本
+            html: verificationEmail // HTML 模板
+        };
+        // 发送邮件
+        const info = await transporter.sendMail(mailOptions);
+        emailStore.set(to, {
+            code: codeObj.code,
+            createdAt: codeObj.createdAt,
+            expiresAt: codeObj.expiresAt,
+        });
+        console.log("✅ 邮件已发送:", info.messageId);
+        // console.log("✅ 邮件已发送")
+        return true;
+    }
+    catch (error) {
+        console.error("邮件发送失败:", error);
+        return false;
+    }
+    finally {
+        isSending.delete(to);
+    }
 }
 // 清理过期验证码
 setInterval(() => {

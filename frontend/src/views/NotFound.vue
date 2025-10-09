@@ -1,8 +1,10 @@
 <script setup lang="ts" name="NotFound">
+import Func from '@/components/utils/Func.vue';
 </script>
 
 <template>
   <div class="not-found">
+    <Func />
     <h1>404</h1>
     <p>哎呀，页面内容漂走啦～💨</p>
     <RouterLink to="/" class="home-link">回到首页</RouterLink>
@@ -19,7 +21,9 @@
   min-height: 100vh;
   width: 100%;
   text-align: center;
-  background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+  /* background: var(--color-bg-notfound); */
+  background-color: var(--color-bg-notfound);
+   /* background-color: wheat; */
   color: #0077b6;
   font-family: 'Segoe UI', sans-serif;
 }

@@ -1,3 +1,19 @@
+export interface articleImageItem {
+    id?: string,
+    article_id?: string,
+    image_url: string,
+    sort_order?: number,
+    created_at?: string
+}
+export interface articleVideoItem {
+    id?: string,
+    article_id?: string,
+    video_url: string,
+    thumbnail_url?: string,
+    duration?: string,
+    sort_order?: number,
+    created_at?: string
+}
 export interface articleData {
     id: number,
     user_id: number,
@@ -7,6 +23,8 @@ export interface articleData {
     type: number,
     is_top?: boolean,
     is_ad?: boolean,
+    ad_title: string,
+    ad_url: string,
     isLiked?: boolean,
     like_count: number,
     comment_count: number,
@@ -18,14 +36,8 @@ export interface articleData {
         nickname: string,
         avatar: string,
     },
-    article_images: {
-        id: string,
-        article_id: string,
-        image_url: string,
-        sort_order: number,
-        created_at: string
-    }[],
-    article_videos: any[]
+    article_images: articleImageItem[],
+    article_videos: articleVideoItem[]
 }
 export interface createArticleData {
     content: string,
@@ -33,6 +45,8 @@ export interface createArticleData {
     location?: string,
     isTop?: boolean,
     isAd?: boolean,
+    adTitle?: string,
+    adUrl?: string,
     type?: number,
     imageUrls?: string[],
     videoUrls?: string[],

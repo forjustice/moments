@@ -250,7 +250,7 @@ const handleRegister = async () => {
     align-items: center;
     min-width: 320px;
     max-width: 440px;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--color-bg-app);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
@@ -320,6 +320,7 @@ input {
     /* 去掉聚焦时的轮廓 */
     transition: border-color 0.3s;
     /* 过渡效果 */
+    color: var(--color-text-primary);
 }
 
 input:focus {

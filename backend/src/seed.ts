@@ -61,6 +61,11 @@ async function main() {
       k: 'site_logo',
       v: ''
     },
+    {
+      // 网站自定义字体
+      k: 'site_font',
+      v: ''
+    },
     // 首页用户背景
     {
       k: 'site_header_background',
@@ -104,6 +109,21 @@ async function main() {
       v: '0'
     },
     {
+      // 用户发表文章是否需要验证 0 不需要， 1需要
+      k: 'user_captcha_article',
+      v: '0'
+    },
+    {
+      // 用户发表评论是否需要验证 0 不需要， 1需要
+      k: 'user_captcha_comment',
+      v: '0'
+    },
+    {
+      // 用户 更新信息 是否需要验证 0 不需要， 1需要
+      k: 'user_captcha_update',
+      v: '0'
+    },
+    {
       k: 'user_status',
       v: '1'
     },
@@ -115,6 +135,61 @@ async function main() {
       k: 'verify_hcaptcha_app',
       v: ''
     },
+    {
+      // 文件上传方式 0 为本地， 1为s3
+      k: 'upload_method',
+      v: '0'
+    },
+    {
+      // 文件上传数量
+      k: 'upload_number',
+      v: '9'
+    },
+    {
+      // 单文件大小(单位 M)
+      k: 'upload_size',
+      v: '5'
+    },
+    {
+      // 端点（R2 必填）
+      k: 'upload_s3_endpoint',
+      v: ''
+    },
+    {
+      // 区域
+      k: 'upload_s3_region',
+      v: ''
+    },
+    {
+      // 储存桶名称
+      k: 'upload_s3_bucketname',
+      v: ''
+    },
+    {
+      // accessKeyId
+      k: 'upload_s3_id',
+      v: ''
+    },
+    {
+      // secretAccessKey
+      k: 'upload_s3_secret',
+      v: ''
+    },
+    {
+      // 域名
+      k: 'upload_s3_domain',
+      v: ''
+    },
+    {
+      // 位置信息接口 0 为ping0
+      k: 'location_method',
+      v: '0'
+    },
+    {
+      // 友情链接页面描述
+      k: 'link_brief',
+      v: '我的好朋友'
+    },
   ]
   for (const config of configs) {
     await prisma.config.upsert({
@@ -124,7 +199,7 @@ async function main() {
     })
   }
 
-  console.log(`✅数据填充完成.`);
+  console.log(`✅ 数据填充完成.`);
 }
 
 main()

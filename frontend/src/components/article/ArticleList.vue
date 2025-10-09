@@ -93,9 +93,9 @@ function handleLoadMoreComments(articleId: number) {
 
 <template>
     <!-- 展示内容 -->
-    <div class="article-container">
+    <div class="article-container" >
         <ul>
-            <li v-for="article in feedStore.articles" :key="article.id">
+            <li v-for="article in feedStore.articles" :key="article.id" @click="console.log(article)">
                 <ArticleItem :article="article" :likers="feedStore.articleLikesMap[article.id] || []"
                     :comments="feedStore.commentsMap[article.id] || []" :is-show-input="!!isShowInputMap[article.id]"
                     :has-more-comments="feedStore.commentPagination[article.id]?.hasMore ?? false"

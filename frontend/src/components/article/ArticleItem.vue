@@ -2,7 +2,7 @@
 import ArticleActions from './ArticleActions.vue';
 import Review from './Review.vue';
 import { getLocation } from '@/utils/location'
-import { Thumbtack, Ad } from '@vicons/fa';
+import { Thumbtack, Ad, Link } from '@vicons/fa';
 import { Icon } from '@vicons/utils';
 import router from '@/router';
 import { type articleData } from '@/types/article';
@@ -30,6 +30,9 @@ async function showLocation() {
     } catch (error) {
         console.log('@error', error)
     }
+}
+function openAd(url: string) {
+    window.open(url, '_blank', 'noopener,noreferrer')
 }
 </script>
 
@@ -67,9 +70,16 @@ async function showLocation() {
             <div v-if="article.content" class="main-context" @click="router.push(`/article/${props.article.id}`)">
                 <p>{{ props.article.content }}</p>
             </div>
+            <!-- 推广内容跳转 -->
+            <div class="ad-container" v-if="article.is_ad && article.ad_url" @click="openAd(article.ad_url)">
+                <Icon class="ad-icon">
+                    <Link />
+                </Icon>
+                <span class="ad-title">{{ article.ad_title }}</span>
+            </div>
             <div class="media">
                 <!-- 将article传递给组件 -->
-                <Media :article="props.article" />
+                <Media :article-images="props.article.article_images" :article-videos="props.article.article_videos" />
             </div>
             <div class="location" @click="showLocation">
                 <p>{{ props.article.location }}</p>
@@ -98,17 +108,8 @@ async function showLocation() {
     flex-direction: row;
     padding: 16px;
     box-sizing: border-box;
-    border-bottom: 1px solid #f0f2f5;
+    border-bottom: 1px solid var(--color-border);
 }
-
-.article-item:first-child {
-    border-top: none;
-}
-
-.article-item:last-child {
-    border-bottom: none;
-}
-
 /* 左侧头像区域 */
 .article-avatar {
     width: 50px;
@@ -135,6 +136,25 @@ async function showLocation() {
     display: flex;
     flex-direction: column;
     min-width: 0;
+}
+
+.ad-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 5px 0px;
+    padding: 5px;
+    border-radius: 5px;
+    background: var(--color-ad);
+    gap: 10px;
+    color: #9AC3EF;
+    font: x-small;
+}
+
+.ad-container:hover {
+    background: var(--color-ad-hover);
+    cursor: pointer;
 }
 
 /**昵称样式 */
@@ -167,7 +187,7 @@ async function showLocation() {
     align-items: center;
     font-size: 12px;
     color: #909399;
-    background-color: #f0f2f5;
+    background-color: var(--color-ad);
     padding: 2px 6px;
     border-radius: 4px;
 }
@@ -185,7 +205,6 @@ async function showLocation() {
     margin: 0;
     font-size: 14px;
     line-height: 1.6;
-    color: #1A1A1A;
     word-wrap: break-word;
     /* 处理长单词或链接换行 */
     word-break: break-all;
@@ -193,6 +212,7 @@ async function showLocation() {
 }
 
 .location {
+    margin-top: 5px;
     color: #4E6086;
     font-size: 12px;
 }

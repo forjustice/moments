@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 router.post('/', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.user?.userId;
-        const { content, status, location, type, isTop, isAd, imageUrls, videoUrls, thumbnail_url } = req.body;
+        const { content, status, location, type, isTop, isAd, adTitle, adUrl, imageUrls, videoUrls, thumbnail_url } = req.body;
         if (!content && !imageUrls && !videoUrls) {
             return res.status(400).json({ error: '文章内容不能为空' });
         }
@@ -27,12 +27,14 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
                     type,
                     is_top: isTop,
                     is_ad: isAd,
+                    ad_title: adTitle,
+                    ad_url: adUrl,
                     user: {
                         connect: { id: BigInt(userId!), }
                     }
                 }
             })
-            // 操作视频
+            // 操作视频（填写外链）
             if (imageUrls && Array.isArray(imageUrls) && imageUrls.length > 0) {
                 const imageData = imageUrls.map((url: string, index: number) => ({
                     article_id: createdArticle.id,
@@ -74,7 +76,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
 })
 
 // 获取文章列表 ⭐⭐⭐⭐
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', optionalAuthMiddleware, async (req: Request, res: Response) => {
     try {
         const { page: pageStr, pageSize: pageSizeStr, ...filters } = req.query
 
@@ -193,12 +195,12 @@ router.get('/', async (req: Request, res: Response) => {
             article_images: article.article_images.map((image: article_images) => ({
                 ...image,
                 id: image.id.toString(),
-                article_id: image.article_id.toString()
+                article_id: image.article_id?.toString()
             })),
             article_videos: article.article_videos.map((video: article_videos) => ({
                 ...video,
                 id: video.id.toString(),
-                article_id: video.article_id.toString()
+                article_id: video.article_id?.toString()
             })),
         }));
 
@@ -281,12 +283,12 @@ router.get('/:articleId', optionalAuthMiddleware, async (req: Request, res: Resp
             article_images: article.article_images.map(image => ({
                 ...image,
                 id: image.id.toString(),
-                article_id: image.article_id.toString()
+                article_id: image.article_id?.toString()
             })),
             article_videos: article.article_videos.map(video => ({
                 ...video,
                 id: video.id.toString(),
-                article_id: video.article_id.toString()
+                article_id: video.article_id?.toString()
             })),
             isLiked
         }

@@ -19,6 +19,5 @@ import ArticleList from '@/components/article/ArticleList.vue';
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: #ffffff;
 }
 </style>

@@ -95,7 +95,15 @@ router.get('/publicConfig', async (req: Request, res: Response) => {
             'sitename',
             'verify_hcaptcha_app',
             'user_captcha',
-            'user_status'
+            'user_status',
+            'user_captcha_article',
+            'user_captcha_comment',
+            'user_captcha_update',
+            'upload_method',
+            'upload_number',
+            'upload_size',
+            'location_method',
+            'link_brief'
         ];
         const configs = await prisma.config.findMany({
             where: {

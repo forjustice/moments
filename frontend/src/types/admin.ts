@@ -25,7 +25,21 @@ export interface updateConfigData {
     user_auth?: string,
     // 0为关闭 | 1为hcaptcha验证
     user_captcha?: string,
+    user_captcha_article?: string,
+    user_captcha_comment?: string,
+    user_captcha_update?: string,
     verify_hcaptcha_user?: string,
     verify_hcaptcha_app?: string,
-
+    location_method?: string,
+    // 文件上传
+    upload_method?: string,
+    upload_number?: string
+    upload_size?: string,
+    upload_s3_bucketname?: string,
+    upload_s3_domain?: string,
+    upload_s3_endpoint?: string,
+    upload_s3_id?: string,
+    upload_s3_region?: string,
+    upload_s3_secret?: string,
+    link_brief?: string,
 }

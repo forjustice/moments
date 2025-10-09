@@ -1,5 +1,9 @@
 # 瞬刻 - 快速部署文档
 
+## Docker方式：[doc/docker-readme.md](docker-readme.md)
+
+## Node方式
+
 1. 该文件夹（[momentsQuickDeploy](https://github.com/reaishijie/moments/tree/main/momentsQuickDeploy)）已经打包好前端内容，只需要运行在node上即可。
 2. 上传源码到服务器 或 使用git拉取文件
 

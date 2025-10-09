@@ -8,8 +8,11 @@ import articlesRouter from './routes/articles.js'
 import commentsRouter from './routes/comments.js'
 import noticeRouter from './routes/notice.js'
 import adminRouter from './routes/admin.js'
+import uploadRouter from './routes/upload.js'
+import linkRouter from './routes/link.js'
 import path from "path";
 import { fileURLToPath } from "url";
+import { CONFIG_CACHE, disconnectPrisma } from "./services/config.service.js";
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -41,11 +44,18 @@ app.use('/api/articles', articlesRouter)
 app.use('/api/comments', commentsRouter)
 app.use('/api/notice', noticeRouter)
 app.use('/api/admin', adminRouter)
+app.use('/api/upload', uploadRouter)
+app.use('/api/link', linkRouter)
+
 app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
-
 app.listen(port, () => {
     console.log(`【${date}】🚀 后端启动成功：http://${host}:${port}`);
-    
+
+    process.on('SIGTERM', () => {
+        console.log('SIGTERM received, closing resources...');
+        disconnectPrisma();
+        process.exit(0);
+    });
 })

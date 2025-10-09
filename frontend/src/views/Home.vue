@@ -77,7 +77,7 @@ onMounted(async () => {
 <template>
   <div class="container">
     <div class="top-bar">
-      <Header>
+      <Header :headerBackgroundUrl="header_background">
         <!-- 左插槽 -->
         <template #left="{ isBlurred }">
           <div class="top-bar-left">
@@ -137,11 +137,11 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: rgb(255, 255, 255);
+  background-color: var(--color-bg-app);
 }
 .brief span {
     padding: 5px;
-    color: rgb(255, 255, 255, 0.9);
+    color: #f3f3f3;
     margin-top: -35px;
     margin-right: 10px;
     z-index: 5;
@@ -174,22 +174,22 @@ onMounted(async () => {
 /* bar的图标 */
 .icon {
   font-size: 20px;
-  color: rgb(238, 233, 233);
+  color: #EEE9E9;
   margin: 3px;
 }
 
 .icon:hover {
-  color: rgb(200, 194, 194);
+  color: #C8C2C2;
   cursor: pointer;
 }
 
 .icon.blurred {
   font-size: 20px;
-  color: black;
+  color: #858484;
 }
 
 .icon.blurred:hover {
-  color: rgb(81, 78, 78);
+  color: #bfbebe;
 }
 
 /* 内容 */
