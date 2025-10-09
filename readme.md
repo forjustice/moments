@@ -19,6 +19,15 @@
 
 使用`build.sh`时候注意前端`.env`的接口修改为 `VITE_API_BASE_URL=/api` ，前后端分离则使用 `VITE_API_BASE_URL=http://localhost:9889/api`(记得替换成你真实后端地址)
 
+## 项目预览
+
+
+|                                                    首页（亮）                                                    |                                                    首页（暗）                                                    |                                                     文章详情                                                     |
+| :---------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------: |
+| <img width="300" alt="1" src="https://github.com/user-attachments/assets/25231327-80e1-426f-9afd-6a1bf3fce939" /> | <img width="300" alt="2" src="https://github.com/user-attachments/assets/3ac8fdd8-46f7-4a17-bdfd-080737268c37" /> | <img width="300" alt="3" src="https://github.com/user-attachments/assets/ca4ff306-5aec-4ec9-b06c-e8fb833fa8d6" /> |
+|                                                     **推广**                                                     |                                                  **发布文章**                                                  |                                                   **用户资料**                                                   |
+| <img width="300" alt="4" src="https://github.com/user-attachments/assets/01710755-98d4-4b43-85b7-1b08a675fa27" /> | <img width="300" alt="5" src="https://github.com/user-attachments/assets/45735944-d30d-4f9e-b05d-1c3017b0774f" /> | <img width="300" alt="6" src="https://github.com/user-attachments/assets/b946afd9-3451-4175-a65a-20647e104b1d" /> |
+
 ## 更新计划：[doc/update.md](doc/update.md)
 
 ### 本次更新
