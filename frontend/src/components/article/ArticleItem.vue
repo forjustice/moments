@@ -75,7 +75,7 @@ function openAd(url: string) {
                 <Icon class="ad-icon">
                     <Link />
                 </Icon>
-                <span class="ad-title">{{ article.ad_title }}</span>
+                <span class="ad-title">{{ article.ad_title || article.ad_url }}</span>
             </div>
             <div class="media">
                 <!-- 将article传递给组件 -->
@@ -143,18 +143,19 @@ function openAd(url: string) {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    min-height: 30px;
     margin: 5px 0px;
     padding: 5px;
     border-radius: 5px;
-    background: var(--color-ad);
+    background-color: var(--color-ad);
     gap: 10px;
-    color: #9AC3EF;
+    color: var(--color-text-other);
     font-size: 15px;
     line-height: 1.4;
 }
 
 .ad-container:hover {
-    background: var(--color-ad-hover);
+    background-color: var(--color-ad-hover);
     cursor: pointer;
 }
 

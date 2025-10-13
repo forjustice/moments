@@ -166,9 +166,8 @@ const isDetailPage = computed(() => route.name === 'articleDetail')
 
 .users {
   padding: 5px 5px 5px 10px;
-  color: #9ac3ef;
+  color: var(--color-text-other);
   border-bottom: 1px solid var(--color-review-border);
-
 }
 
 .users-icon {

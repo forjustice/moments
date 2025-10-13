@@ -59,7 +59,7 @@ async function main() {
     // 网站LOGO
     {
       k: 'site_logo',
-      v: ''
+      v: '/img/avatar.jpg'
     },
     {
       // 网站自定义字体
