@@ -149,7 +149,8 @@ function openAd(url: string) {
     background: var(--color-ad);
     gap: 10px;
     color: #9AC3EF;
-    font: x-small;
+    font-size: 15px;
+    line-height: 1.4;
 }
 
 .ad-container:hover {
