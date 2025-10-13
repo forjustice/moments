@@ -51,7 +51,6 @@ onMounted(async() => {
         <div class="body">
             <span v-if="!article">正在加载中...</span>
             <ArticleItem 
-            @click="console.log(article)"
                 v-if="article"
                 :article="article"
                 :likers="articleStore.likers || []"

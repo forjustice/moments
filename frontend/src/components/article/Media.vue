@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Media">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import type { articleImageItem, articleVideoItem } from '@/types/article';
 import { useMessageStore } from '@/store/message';
 import { Icon } from '@vicons/utils';
@@ -25,6 +25,38 @@ const props = defineProps({
         required: false
     }
 })
+const apiUrl = import.meta.env.VITE_API_BASE_URL as string
+const baseUrl = new URL(apiUrl).origin
+/**
+ * const baseUrl = apiUrl.replace(/\/api.*$/, '') // 移除 /api 及其后面的内容
+ * const baseUrl = apiUrl.match(/^https?:\/\/[^\/]+/)?.[0] || apiUrl
+ */
+// 创建计算属性,而不是直接修改props
+const processedImages = computed(() => {
+    if (!props.articleImages?.length) return []
+    
+    return props.articleImages.map((i) => {
+        if (i?.image_url?.startsWith('/') && apiUrl?.startsWith('http')) {
+            return { ...i, image_url: baseUrl + i.image_url }
+        }
+        return i
+    }).filter(Boolean) // 过滤掉 undefined/null
+})
+const processedVideos = computed(() => {
+    if (!props.articleVideos?.length) return []
+
+    return props.articleVideos.map((i) => {
+        if (i?.video_url?.startsWith('/') && apiUrl?.startsWith('http')) {
+            return { ...i, video_url: baseUrl + i.video_url }
+        }
+        if (i?.thumbnail_url?.startsWith('/') && apiUrl?.startsWith('http')) {
+            return { ...i, thumbnail_url: baseUrl + i.thumbnail_url }
+        }
+        return i
+    }).filter(Boolean)
+})
+
+
 // 定义事件，用于在排序后通知父组件
 const emit = defineEmits(['update:articleImages', 'add:file', 'remove:image']);
 const draggedIndex = ref<number | null>(null);
@@ -91,14 +123,17 @@ onUnmounted(() => {
 
 <template>
     <div class="container">
+        <!-- 添加文件 -->
         <div class="add-file" @click="$emit('add:file')"
             v-if="props.upload && articleImages.length === 0 && articleVideos.length === 0">
             <Icon>
                 <Plus />
             </Icon>
         </div>
+
+        <!-- 文章的图片展示 -->
         <ul v-if="articleImages.length !== 0">
-            <li v-for="(image, index) in articleImages" :key="image.id" @click="showImage(image.image_url)"
+            <li v-for="(image, index) in processedImages" :key="image.id" @click="showImage(image.image_url)"
                 @dragstart="onDragStart(index)" @dragover="onDragOver" @drop="onDrop(index)" @dragend="onDragEnd">
                 <div class="image-wrapper">
                     <img :src="image.image_url" alt="文章图片" @click="showImage(image.image_url)" />
@@ -115,8 +150,8 @@ onUnmounted(() => {
                 </Icon>
             </div>
         </ul>
-        <video v-if="articleVideos.length !== 0 && articleImages.length === 0" :src="articleVideos[0]?.video_url"
-            ref="videoRef" :poster="articleVideos[0].thumbnail_url" muted playsinline controls>
+        <video v-if="processedVideos.length !== 0 && processedImages.length === 0" :src="processedVideos[0]?.video_url"
+            ref="videoRef" :poster="processedVideos[0].thumbnail_url" muted playsinline controls>
         </video>
         <div v-if="enlargedImage" class="overlay" @click="closeImage">
             <img :src="enlargedImage" class="enlarged" alt="放大图片">

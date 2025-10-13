@@ -54,8 +54,6 @@ const backTop = () => {
     behavior: 'smooth'
   })
   messageStore.show('已回到顶部', 'info', 2000)
-  console.log(window.scrollY);
-
 }
 </script>
 

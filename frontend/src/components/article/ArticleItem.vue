@@ -26,7 +26,7 @@ async function showLocation() {
     try {
         const promiseResult = await getLocation()
         const data = promiseResult?.result
-        console.log(data);
+        console.log('获取当前位置信息',data);
     } catch (error) {
         console.log('@error', error)
     }

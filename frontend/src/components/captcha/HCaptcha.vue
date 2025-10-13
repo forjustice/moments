@@ -17,10 +17,9 @@ const appkey = ref()
 onMounted(async () => {
   try {
     const res = await getPublicConfig()
-    // console.log('@', res);
     appkey.value = res.data.verify_hcaptcha_app
   } catch (error) {
-    // console.log('@', error);
+    console.log('验证失败', error);
     messageStore.show('获取密钥失败', 'error', 2000)
   }
 })

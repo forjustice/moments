@@ -5,6 +5,13 @@ import { useMessageStore } from '@/store/message';
 import { useDefaultStore } from '@/store/default';
 import Media from '@/components/article/Media.vue';
 import type { articleImageItem, articleVideoItem } from '@/types/article';
+const apiUrl = import.meta.env.VITE_API_BASE_URL
+console.log('@',apiUrl);
+if(apiUrl.startsWith('http')) {
+    console.log();
+    
+}
+
 
 const messageStore = useMessageStore()
 const defaultStore = useDefaultStore()

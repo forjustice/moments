@@ -25,7 +25,7 @@ export function uploadFiles(
     uploadUrl: string,
     onUploadProgress?: (progressEvent: any) => void
 ) {
-    console.log('@uploadUrl:', uploadUrl);
+    // console.log('@uploadUrl:', uploadUrl);
     
     const config: AxiosRequestConfig = {
         url: `${uploadUrl}`,
